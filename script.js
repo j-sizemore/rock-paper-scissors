@@ -1,3 +1,4 @@
+// get computer choice of Rock, Paper, or Scissors
 function getComputerChoice() {
 
     // random number on [0, 2]
@@ -16,68 +17,53 @@ function getComputerChoice() {
     }
 }
 
+// validate input (false = invalid, true = valid)
+function isValid(inputValue) {
+    if (
+        inputValue == "Rock" 
+        || inputValue == "Paper" 
+        || inputValue == "Scissors" 
+    ) {
+        return true;
+    }    
+    console.error(`Unexpected player selection ${inputValue}`);
+    return false;
+}
+
 function playRound(playerSelection, computerSelection) {
 
     const playerSelectionTrans = 
         playerSelection.substr(0, 1).toUpperCase() 
         + playerSelection.substr(1).toLowerCase();
 
+    // validate input
+    if (!(isValid(playerSelectionTrans) && isValid(computerSelection))) {
+        return "";
+    }
+
+    // check for tie
     if (playerSelectionTrans == computerSelection) {
         return "You tied!";
     }
 
-    let result;
+    // playerWin = true if player wins, false if player loses
+    let playerWin;
 
-    switch (playerSelectionTrans) {
+    const choices = [
+        {value:"Rock", beats:"Scissors"},
+        {value:"Scissors", beats:"Paper"},
+        {value:"Paper", beats:"Rock"}
+    ];
 
-        case "Rock":
-            switch (computerSelection) {
-                case "Paper":
-                    result = "lose";
-                    break;
-                case "Scissors":
-                    result = "win";
-                    break;
-                default:
-                    console.error(`Unexpected value ${computerSelection}`);
-                    return "";
-            }
+    for (let choice of choices) {
+        if (playerSelectionTrans == choice.value) {
+            playerWin = (computerSelection == choice.beats);
             break;
-
-        case "Paper":
-            switch (computerSelection) {
-                case "Rock":
-                    result = "win";
-                    break;
-                case "Scissors":
-                    result = "lose";
-                    break;
-                default:
-                    console.error(`Unexpected value ${computerSelection}`);
-                    return "";
-            }
-            break;
-
-        case "Scissors":
-            switch (computerSelection) {
-                case "Rock":
-                    result = "lose";
-                    break;
-                case "Paper":
-                    result = "win";
-                    break;
-                default:
-                    console.error(`Unexpected value ${computerSelection}`);
-                    return "";
-            }
-            break;
-
-        default:
-            console.error(`Unexpected value ${playerSelectionTrans}`);
-            return "";
+        }
     }
 
-    return (result == "win") ?
+    // return message
+    return playerWin ?
         `You win! ${playerSelectionTrans} beats ${computerSelection}` :
         `You lose! ${computerSelection} beats ${playerSelectionTrans}`;
 
