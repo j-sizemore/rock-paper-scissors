@@ -72,9 +72,8 @@ function playRound(playerSelection, computerSelection) {
 // play 5 rounds and determine winner and loser
 function playGame() {
     const rounds = 5;
-    let playerScore, computerScore;
-
-    playerScore = 0;
+    let playerScore = 0;
+    let computerScore = 0;
 
     for (let i = 0; i < rounds; i++) {
 
@@ -89,11 +88,12 @@ function playGame() {
         // increment player score if they won
         if (roundMessage.indexOf("You win") > -1) {
             playerScore++;
+        } else if (roundMessage.indexOf("You lose") > -1) {
+            computerScore++;
         }
 
     }
 
-    computerScore = rounds - playerScore;
     console.log("Final score:");
     console.log(`Player: ${playerScore}`);
     console.log(`Computer: ${computerScore}`);
@@ -108,3 +108,5 @@ function playGame() {
 
     return;
 }
+
+playGame();
