@@ -1,3 +1,13 @@
+const WINNING_SCORE = 5;
+
+const buttons = document.querySelectorAll('button');
+const playerChoiceField = document.querySelector('#player-choice');
+const computerChoiceField = document.querySelector('#computer-choice');
+const roundMessageField = document.querySelector('#round-message');
+const playerScoreField = document.querySelector('#player-score');
+const computerScoreField = document.querySelector('#computer-score');
+const finalResultField = document.querySelector('#final-result');
+
 // get computer choice of Rock, Paper, or Scissors
 function getComputerChoice() {
 
@@ -69,44 +79,48 @@ function playRound(playerSelection, computerSelection) {
 
 }
 
-// play 5 rounds and determine winner and loser
+// play round and update score fields
+function updateScore(event) {
+    let playerChoice = event.target.id;
+    let computerChoice = getComputerChoice();
+
+    // determine round winners
+    let roundMessage = playRound(playerChoice, computerChoice);
+
+    // increment player score if they won
+    if (roundMessage.indexOf("You win") > -1) {
+        playerScore++;
+    } else if (roundMessage.indexOf("You lose") > -1) {
+        computerScore++;
+    }
+
+    // update text
+    playerChoiceField.textContent = playerChoice;
+    computerChoiceField.textContent = computerChoice;
+    roundMessageField.textContent = roundMessage;
+    playerScoreField.textContent = playerScore;
+    computerScoreField.textContent = computerScore;
+
+    // check if a player has score of 5
+    if (playerScore >= WINNING_SCORE || computerScore >= WINNING_SCORE) {
+        finalResultField.textContent = playerScore >= WINNING_SCORE ?
+            "You won!"
+            : "You lose :(";
+        buttons.forEach((button) => {
+            button.removeEventListener('click', updateScore);
+        });
+        return;
+    }
+}
+
+// play until one player gets WINNING_SCORE points
+let playerScore = 0;
+let computerScore = 0;
+
 function playGame() {
-    const rounds = 5;
-    let playerScore = 0;
-    let computerScore = 0;
-
-    for (let i = 0; i < rounds; i++) {
-
-        // get player choice first so they don't cheat!
-        let playerChoice = prompt('Choose "Rock", "Paper", or "Scissors"');
-        let computerChoice = getComputerChoice();
-
-        // determine round winner
-        let roundMessage = playRound(playerChoice, computerChoice);
-        console.log(roundMessage);
-
-        // increment player score if they won
-        if (roundMessage.indexOf("You win") > -1) {
-            playerScore++;
-        } else if (roundMessage.indexOf("You lose") > -1) {
-            computerScore++;
-        }
-
-    }
-
-    console.log("Final score:");
-    console.log(`Player: ${playerScore}`);
-    console.log(`Computer: ${computerScore}`);
-
-    if (playerScore > computerScore) {
-        console.log("You won! :)");
-    } else if (playerScore < computerScore) {
-        console.log("You lost! :(");
-    } else {
-        console.log("You tied!");
-    }
-
-    return;
+    buttons.forEach((button) => {
+        button.addEventListener('click', updateScore);
+    });
 }
 
 playGame();
